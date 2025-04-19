@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Video eLearning Bloccato</title>
-  <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
       padding-top: 40px;
     }
-    .video-js {
+    video {
       width: 720px;
       height: 405px;
       margin: 0 auto;
@@ -26,48 +25,40 @@
 
   <h2>Guarda il video per intero per continuare</h2>
 
-  <video
-    id="my-video"
-    class="video-js"
-    controls
-    preload="auto"
-    data-setup='{}'>
-    <source src="https://transcendent-salamander-81c43b.netlify.app/montaggio.mp4" type="video/mp4" />
+  <video id="myVideo" controls>
+    <source src="https://transcendent-salamander-81c43b.netlify.app/montaggio.mp4" type="video/mp4">
     Il tuo browser non supporta il video.
   </video>
 
   <br>
   <button id="nextBtn" disabled>Avanti</button>
 
-  <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
   <script>
-    const player = videojs('my-video');
+    const video = document.getElementById('myVideo');
     const nextBtn = document.getElementById('nextBtn');
     let maxTime = 0;
     let seeking = false;
 
-    player.on('timeupdate', function () {
+    video.addEventListener('timeupdate', () => {
       if (!seeking) {
-        const current = player.currentTime();
-        if (current > maxTime) {
-          maxTime = current;
+        if (video.currentTime > maxTime) {
+          maxTime = video.currentTime;
         }
       }
     });
 
-    player.on('seeking', function () {
+    video.addEventListener('seeking', () => {
       seeking = true;
-      const current = player.currentTime();
-      if (current > maxTime + 1) {
-        player.currentTime(maxTime);
+      if (video.currentTime > maxTime + 1) {
+        video.currentTime = maxTime;
       }
     });
 
-    player.on('seeked', function () {
+    video.addEventListener('seeked', () => {
       seeking = false;
     });
 
-    player.on('ended', function () {
+    video.addEventListener('ended', () => {
       nextBtn.disabled = false;
     });
   </script>
