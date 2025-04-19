@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
@@ -33,7 +33,7 @@
     preload="auto"
     data-setup='{}'>
     <source src="https://dl.dropboxusercontent.com/scl/fi/3g9d93q7mopdth25ta3w7/MONTAGGIO-CDS-2025-16-9-oriz_Flebinec-Plus.mp4?rlkey=rzta6csn64rd6m9dtmc85i0la&st=5ao9rosu" type="video/mp4" />
-    Il tuo browser non supporta il tag video.
+    Il tuo browser non supporta il video.
   </video>
 
   <br>
@@ -42,23 +42,37 @@
   <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
   <script>
     const player = videojs('my-video');
-    let maxTime = 0;
     const nextBtn = document.getElementById('nextBtn');
+    let maxTime = 0;
+    let seeking = false;
 
+    // Aggiorna maxTime mentre il video è in riproduzione
     player.on('timeupdate', function () {
-      const currentTime = player.currentTime();
-
-      // Aggiorna il punto massimo raggiunto
-      if (currentTime > maxTime) {
-        maxTime = currentTime;
+      if (!seeking) {
+        const current = player.currentTime();
+        if (current > maxTime) {
+          maxTime = current;
+        }
       }
+    });
 
-      // Impedisce di saltare avanti
-      if (currentTime - maxTime > 1.5) {
+    // Quando l’utente prova a cercare (seek)
+    player.on('seeking', function () {
+      seeking = true;
+      const current = player.currentTime();
+
+      // Se cerca di andare oltre maxTime → lo riportiamo indietro
+      if (current > maxTime + 1) {
         player.currentTime(maxTime);
       }
     });
 
+    // Una volta finita l’azione di seek
+    player.on('seeked', function () {
+      seeking = false;
+    });
+
+    // Alla fine del video, sblocca il bottone
     player.on('ended', function () {
       nextBtn.disabled = false;
     });
