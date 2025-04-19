@@ -46,7 +46,7 @@
     let maxTime = 0;
     let seeking = false;
 
-    // Aggiorna maxTime mentre il video è in riproduzione
+    // Registra il punto massimo raggiunto
     player.on('timeupdate', function () {
       if (!seeking) {
         const current = player.currentTime();
@@ -56,23 +56,20 @@
       }
     });
 
-    // Quando l’utente prova a cercare (seek)
+    // Blocca il salto avanti
     player.on('seeking', function () {
       seeking = true;
       const current = player.currentTime();
-
-      // Se cerca di andare oltre maxTime → lo riportiamo indietro
       if (current > maxTime + 1) {
         player.currentTime(maxTime);
       }
     });
 
-    // Una volta finita l’azione di seek
     player.on('seeked', function () {
       seeking = false;
     });
 
-    // Alla fine del video, sblocca il bottone
+    // Sblocca il pulsante "Avanti" a fine video
     player.on('ended', function () {
       nextBtn.disabled = false;
     });
