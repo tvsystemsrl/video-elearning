@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Video eLearning Bloccato</title>
+  <title>Video eLearning Anti-Skip</title>
   <style>
     body {
       font-family: sans-serif;
@@ -12,7 +12,6 @@
     video {
       width: 720px;
       height: 405px;
-      margin: 0 auto;
     }
     #nextBtn {
       margin-top: 20px;
@@ -23,10 +22,11 @@
 </head>
 <body>
 
-  <h2>Guarda il video per intero per continuare</h2>
+  <h2>Guarda tutto il video per proseguire</h2>
 
   <video id="myVideo" controls>
-    <source src="https://transcendent-salamander-81c43b.netlify.app/montaggio.mp4" type="video/mp4">
+    <source src="https://dl.dropboxusercontent.com/scl/fi/ckcgyxlyo9nqfa7e4017y/VIDEO-2025-04-05-10-54-27.mp4?rlkey=7wopkn29s8ehoiomfr9h203fs&st=x5zclwcp
+    " type="video/mp4" />
     Il tuo browser non supporta il video.
   </video>
 
@@ -37,27 +37,19 @@
     const video = document.getElementById('myVideo');
     const nextBtn = document.getElementById('nextBtn');
     let maxTime = 0;
-    let seeking = false;
+    let lastChecked = 0;
 
-    video.addEventListener('timeupdate', () => {
-      if (!seeking) {
-        if (video.currentTime > maxTime) {
-          maxTime = video.currentTime;
-        }
-      }
-    });
-
-    video.addEventListener('seeking', () => {
-      seeking = true;
-      if (video.currentTime > maxTime + 1) {
+    // Blocca avanzamento costantemente
+    setInterval(() => {
+      const current = video.currentTime;
+      if (current > maxTime + 0.5) {
         video.currentTime = maxTime;
+      } else if (current > maxTime) {
+        maxTime = current;
       }
-    });
+    }, 200);
 
-    video.addEventListener('seeked', () => {
-      seeking = false;
-    });
-
+    // Sblocca "Avanti" alla fine
     video.addEventListener('ended', () => {
       nextBtn.disabled = false;
     });
